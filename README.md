@@ -1,30 +1,49 @@
-# 🎥 YTD for After Effects
+# Youtube video downloader
 
-A lightweight, high-performance YouTube video downloader with a minimalist web interface. Specifically pre-configured to output videos that are 100% compatible with **Adobe After Effects** (H.264 / AAC MP4).
+Минималистичный и быстрый веб-интерфейс для скачивания видео с YouTube. Построен на **Zig 0.15.2** с использованием системных вызовов `yt-dlp`.
 
-Created by **dimoncio**.
+## Особенности
+* **Minimalist Design**: Чистое черно-белое оформление в стиле минимализма.
+* **High Performance**: Серверная часть на Zig обеспечивает мгновенный отклик.
+* **Clean Code**: HTML вынесен в отдельный файл для удобства редактирования.
+
+## Авторы
+* **dimoncio** — Идея и разработка ядра.
+* **Wrether** — Соавтор, дизайн и логика интерфейса.
 
 ---
 
-## 🚀 Features
-- **One-Click Download**: Just paste the link and hit the arrow.
-- **AE Ready**: No more "File format not supported" errors in After Effects.
-- **Dark Mode**: Clean, distraction-free black interface.
-- **Fast**: Powered by the Zig programming language for maximum efficiency.
+## Требования
+Для корректной работы проекта в системе должны быть установлены:
+1.  **Zig 0.15.2**
+2.  **yt-dlp** (должен быть добавлен в переменные окружения PATH)
+3.  **ffmpeg** (необходим для склейки видео и аудио потоков)
 
-## 🛠️ How to Setup (For Everyone)
+---
 
-Since this is a portable tool, you need to place a few dependencies in the same folder as the app:
+## Инструкция по установке и запуску
 
-1. **Download the Essentials**:
-   - Get `yt-dlp.exe` from [yt-dlp releases](https://github.com/yt-dlp/yt-dlp/releases).
-   - Get `ffmpeg.exe` and `ffprobe.exe` from [gyan.dev](https://www.gyan.dev/ffmpeg/builds/).
-2. **Project Folder**:
-   Your folder should look like this:
-   ```text
-   my_downloader/
-   ├── main.exe (or main.zig if running via Zig)
-   ├── yt-dlp.exe
-   ├── ffmpeg.exe
-   ├── ffprobe.exe
-   └── cookies.txt (Optional: for age-restricted videos)
+1.  **Клонируйте репозиторий:**
+    ```bash
+    git clone [https://github.com/dimoncio/yt-downloader.git](https://github.com/dimoncio/yt-downloader.git)
+    cd yt-downloader
+    ```
+
+2.  **Структура файлов:**
+    Убедитесь, что `main.zig` и `html_page.html` находятся в одной директории.
+
+3.  **Запуск сервера:**
+    ```bash
+    zig run main.zig
+    ```
+
+4.  **Использование:**
+    * Откройте браузер по адресу: `http://127.0.0.1:8080`
+    * Вставьте ссылку на нужное видео.
+    * Нажмите кнопку **➔**. Видео сохранится в папку с программой.
+
+---
+
+## Разработка
+* Фронтенд (HTML/CSS) — `html_page.html`.
+* Бекенд (Сервер/Логика) — `main.zig`.
