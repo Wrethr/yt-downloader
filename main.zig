@@ -225,9 +225,9 @@ fn handleConnection(conn: std.net.Server.Connection) void {
 }
 
 pub fn main() !void {
-<<<<<<< HEAD
+
     // ThreadPool использует smp_allocator для своих нужд
-=======
+
     const file = std.fs.cwd().openFile("html_page.html", .{}) catch |err| {
         std.log.err("Could not open html_page.html: {s}", .{@errorName(err)});
         return err;
@@ -237,7 +237,7 @@ pub fn main() !void {
     html_content = try file.readToEndAlloc(allocator, 1024 * 1024);
     defer allocator.free(html_content);
 
->>>>>>> d41423d (Refactor: move HTML to separate file, update title and add Wrether as co-author)
+
     var pool: std.Thread.Pool = undefined;
     try pool.init(.{ .allocator = allocator });
     defer pool.deinit();
@@ -247,24 +247,23 @@ pub fn main() !void {
     defer net_server.deinit();
 
     std.log.info("Listening on http://127.0.0.1:8080", .{});
-<<<<<<< HEAD
+
 
     while (true) {
         const conn = net_server.accept() catch |err| {
             // EAGAIN/EMFILE и прочие — не фатальны, продолжаем
-=======
+
     while (true) {
         const conn = net_server.accept() catch |err| {
->>>>>>> d41423d (Refactor: move HTML to separate file, update title and add Wrether as co-author)
+
             std.log.err("accept: {s}", .{@errorName(err)});
             continue;
         };
 
         pool.spawn(handleConnection, .{conn}) catch |err| {
-<<<<<<< HEAD
+
             // Не смогли добавить задачу — закрываем соединение сами
-=======
->>>>>>> d41423d (Refactor: move HTML to separate file, update title and add Wrether as co-author)
+
             std.log.err("spawn task: {s}", .{@errorName(err)});
             conn.stream.close();
         };
