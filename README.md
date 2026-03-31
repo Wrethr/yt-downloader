@@ -25,7 +25,7 @@
 
 1.  **Клонируйте репозиторий:**
     ```bash
-    git clone [https://github.com/dimoncio/Youtube-video-downloader.git](https://github.com/dimoncio/Youtube-video-downloader.git)
+    git clone [https://github.com/dimonc1o/Youtube-video-downloader.git](https://github.com/dimonc1o/Youtube-video-downloader.git)
     cd Youtube-video-downloader
     ```
 
