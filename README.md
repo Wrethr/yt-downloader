@@ -23,7 +23,7 @@ Minimalist YouTube downloader, built with **[Zig](https://ziglang.org/download/)
 
 ## Инструкция по установке и запуску
 
-	**[Скачайте последий release](https://github.com/dimonc1o/Youtube-video-downloader/releases)**
+**[Скачайте последий release](https://github.com/dimonc1o/Youtube-video-downloader/releases)**
 
 	* Распакуйте архив
 	* Запустите main.zig
