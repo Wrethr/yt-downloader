@@ -23,26 +23,12 @@ Minimalist YouTube downloader, built with **[Zig](https://ziglang.org/download/)
 
 ## Инструкция по установке и запуску
 
-1.  **Клонируйте репозиторий:**
-    ```bash
-    git clone [https://github.com/dimonc1o/Youtube-video-downloader.git](https://github.com/dimonc1o/Youtube-video-downloader.git)
-    cd Youtube-video-downloader
-    ```
+**[Скачайте последий release](https://github.com/dimonc1o/Youtube-video-downloader/releases)**
 
-2.  **Структура файлов:**
-    Убедитесь, что `main.zig` и `html_page.html` находятся в одной директории.
-
-3.  **Запуск сервера:**
-    ```bash
-    zig run main.zig
-    ```
-
-4.  **Использование:**
-    * Откройте браузер по адресу: `http://127.0.0.1:8080`
+	*Запустите main.zig*
+	* Откройте браузер по адресу: `http://127.0.0.1:8080`
     * Вставьте ссылку на нужное видео.
     * Нажмите кнопку **➔**. Видео сохранится в папку с программой.
-
----
 
 ## Разработка
 * Фронтенд (HTML/CSS) — `html_page.html`.
