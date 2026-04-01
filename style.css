@@ -1,0 +1,59 @@
+:root {
+    --bg-color: #000; --text-color: #fff; --input-bg: #111; --input-border: #333; --input-hover: #555;
+    --btn-bg: #fff; --btn-text: #000; --circle-bg: #333; --circle-border: #fff; --shadow-color: rgba(255, 255, 255, 0.2);
+    --author-color: #333; --info-color: #888; --error-color: #ff4444;
+}
+[data-theme="light"] {
+    --bg-color: #f4f4f4; --text-color: #000; --input-bg: #fff; --input-border: #ccc; --input-hover: #999;
+    --btn-bg: #000; --btn-text: #fff; --circle-bg: #ccc; --circle-border: #000; --shadow-color: rgba(0, 0, 0, 0.2);
+    --author-color: #888; --info-color: #666; --error-color: #cc0000;
+}
+body { 
+    background-color: var(--bg-color); color: var(--text-color); display: flex; flex-direction: column; 
+    justify-content: center; align-items: center; height: 100vh; margin: 0; font-family: 'Segoe UI', sans-serif; 
+    overflow: hidden; transition: background-color 0.5s ease, color 0.5s ease; 
+}
+h1 { letter-spacing: 5px; margin-bottom: 30px; font-weight: 200; transition: all 0.5s ease; }
+.theme-toggle { 
+    position: fixed; top: 20px; right: 20px; width: 30px; height: 30px; border-radius: 50%; 
+    background: var(--circle-bg); border: 2px solid var(--circle-border); cursor: pointer; 
+    transition: all 0.5s ease; box-shadow: 0 0 10px var(--shadow-color); z-index: 10; 
+}
+.theme-toggle:hover { box-shadow: 0 0 20px var(--shadow-color); transform: scale(1.1); }
+.wrapper { display: flex; flex-direction: column; align-items: center; z-index: 2; position: relative; }
+.domain-icon { 
+    height: 30px; margin-bottom: -15px; opacity: 0; transform: translateY(20px); 
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); display: flex; align-items: center; justify-content: center;
+}
+.domain-icon.visible { opacity: 1; transform: translateY(0); margin-bottom: 15px; }
+.domain-icon svg { width: 80px; height: 30px; fill: var(--text-color); }
+.container { position: relative; display: flex; align-items: center; gap: 10px; z-index: 2; }
+input { 
+    padding: 15px 25px; width: 400px; border: 1px solid var(--input-border); background: var(--input-bg); color: var(--text-color);
+    border-radius: 12px; font-size: 16px; outline: none; transition: all 0.4s ease; box-sizing: border-box;
+}
+input:hover, input:focus { border-color: var(--input-hover); box-shadow: 0 0 20px var(--shadow-color); }
+.btn-download {
+    width: 0; opacity: 0; overflow: hidden; background: var(--btn-bg); color: var(--btn-text); border: none; border-radius: 12px;
+    padding: 15px 0; cursor: pointer; font-size: 20px; transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    display: flex; align-items: center; justify-content: center;
+}
+input:not(:placeholder-shown) + .btn-download.active { width: 60px; opacity: 1; padding: 15px; }
+
+.unsupported-msg { 
+    margin-top: 15px; height: 20px; font-size: 14px; color: var(--error-color); 
+    opacity: 0; transform: translateY(-10px); transition: all 0.3s ease; pointer-events: none;
+}
+.unsupported-msg.visible { opacity: 1; transform: translateY(0); }
+
+.info-panel { 
+    margin-top: 20px; width: 420px; font-size: 14px; color: var(--info-color); 
+    display: none; opacity: 1; max-height: 200px;
+    transition: opacity 0.5s ease, max-height 0.5s ease, transform 0.5s ease, margin 0.5s ease; overflow: hidden;
+}
+.info-panel.hidden { display: block !important; opacity: 0; max-height: 0; transform: translateY(-40px); margin-top: 0; }
+#status-text { color: var(--text-color); font-weight: bold; margin-bottom: 10px; display: block; }
+.loader { width: 100%; height: 4px; background: var(--input-border); position: relative; overflow: hidden; margin-top: 15px; border-radius: 2px; }
+.loader::after { content: ""; position: absolute; left: -150%; width: 100%; height: 100%; background: var(--text-color); animation: loading 2s infinite; }
+@keyframes loading { 100% { left: 100%; } }
+.author { position: fixed; bottom: 20px; font-size: 10px; letter-spacing: 2px; color: var(--author-color); text-transform: uppercase; transition: color 0.5s ease; }

@@ -1,6 +1,8 @@
 const std = @import("std");
 
 var html_content: []u8 = &[_]u8{};
+var css_content: []u8 = &[_]u8{};
+var js_content: []u8 = &[_]u8{};
 const allocator = std.heap.smp_allocator;
 
 const Response = struct {
@@ -32,11 +34,9 @@ fn handleDl(request: *std.http.Server.Request, encoded_url: []const u8) void {
     defer allocator.free(url_buf);
 
     const decoded_url = std.Uri.percentDecodeInPlace(url_buf);
-
     const is_youtube = std.mem.indexOf(u8, decoded_url, "youtube.com") != null or std.mem.indexOf(u8, decoded_url, "youtu.be") != null;
     const is_tiktok = std.mem.indexOf(u8, decoded_url, "tiktok.com") != null;
 
-    // Если это не YouTube и не TikTok — отклоняем
     if (!is_youtube and !is_tiktok) {
         sendResponse(request, .{ .status = .bad_request, .body = "Unsupported URL" });
         return;
@@ -47,7 +47,7 @@ fn handleDl(request: *std.http.Server.Request, encoded_url: []const u8) void {
         sendResponse(request, .{ .status = .internal_server_error, .body = "Failed to start. Is yt-dlp installed?" });
         return;
     };
-
+    
     switch (term) {
         .Exited => |code| {
             if (code == 0) {
@@ -87,13 +87,11 @@ fn handleConnection(conn: std.net.Server.Connection) void {
 
     var read_buffer: [4096]u8 = undefined;
     var write_buffer: [4096]u8 = undefined;
-
     var stream_reader = conn.stream.reader(&read_buffer);
     var stream_writer = conn.stream.writer(&write_buffer);
 
     const writer = &stream_writer.interface;
     const reader = stream_reader.interface();
-
     var http_server = std.http.Server.init(reader, writer);
 
     var request = http_server.receiveHead() catch |err| {
@@ -106,7 +104,26 @@ fn handleConnection(conn: std.net.Server.Connection) void {
 
     if (std.mem.indexOf(u8, target, "/dl?url=")) |idx| {
         handleDl(&request, target[idx + 8 ..]);
+    } else if (std.mem.eql(u8, target, "/style.css")) {
+        request.respond(css_content, .{
+            .status = .ok,
+            .extra_headers = &.{
+                .{ .name = "Content-Type", .value = "text/css; charset=utf-8" },
+            },
+        }) catch |err| {
+            std.log.err("respond css: {s}", .{@errorName(err)});
+        };
+    } else if (std.mem.eql(u8, target, "/script.js")) {
+        request.respond(js_content, .{
+            .status = .ok,
+            .extra_headers = &.{
+                .{ .name = "Content-Type", .value = "application/javascript; charset=utf-8" },
+            },
+        }) catch |err| {
+            std.log.err("respond js: {s}", .{@errorName(err)});
+        };
     } else {
+        // По умолчанию отдаем index.html (корневой путь или любой неопознанный)
         request.respond(html_content, .{
             .status = .ok,
             .extra_headers = &.{
@@ -118,15 +135,26 @@ fn handleConnection(conn: std.net.Server.Connection) void {
     }
 }
 
-pub fn main() !void {
-    const file = std.fs.cwd().openFile("html_page.html", .{}) catch |err| {
-        std.log.err("Could not open html_page.html: {s}", .{@errorName(err)});
+// Вспомогательная функция для загрузки файлов в память
+fn loadFile(path: []const u8) ![]u8 {
+    const file = std.fs.cwd().openFile(path, .{}) catch |err| {
+        std.log.err("Could not open {s}: {s}", .{ path, @errorName(err) });
         return err;
     };
     defer file.close();
+    return try file.readToEndAlloc(allocator, 1024 * 1024);
+}
 
-    html_content = try file.readToEndAlloc(allocator, 1024 * 1024);
+pub fn main() !void {
+    // Загружаем все три статических файла в память при старте
+    html_content = try loadFile("index.html");
     defer allocator.free(html_content);
+    
+    css_content = try loadFile("style.css");
+    defer allocator.free(css_content);
+    
+    js_content = try loadFile("script.js");
+    defer allocator.free(js_content);
 
     var pool: std.Thread.Pool = undefined;
     try pool.init(.{ .allocator = allocator });
@@ -135,14 +163,14 @@ pub fn main() !void {
     const address = try std.net.Address.parseIp4("127.0.0.1", 8080);
     var net_server = try address.listen(.{ .reuse_address = true });
     defer net_server.deinit();
-
+    
     std.log.info("Listening on http://127.0.0.1:8080", .{});
+    
     while (true) {
         const conn = net_server.accept() catch |err| {
             std.log.err("accept: {s}", .{@errorName(err)});
             continue;
         };
-
         pool.spawn(handleConnection, .{conn}) catch |err| {
             std.log.err("spawn task: {s}", .{@errorName(err)});
             conn.stream.close();
